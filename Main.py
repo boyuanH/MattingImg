@@ -8,12 +8,12 @@ def main():
     rects = [];
     rows, cols, div = img.shape
     for i in range(rows):
-        lst_point = [0,255,0]
+        lst_point = [0, 255, 0, [i, -1]]
         for j in range(cols):
-            current_point = [img[i, j][0], img[i, j][1], img[i, j][2]]
-            if __is_new_img_point(lst_point,current_point) is True:
-                if __is_point_in_exist_rect__(current_point,rects) is False:
-                    rects.append(__find_rect_by_point__(current_point))
+            current_point = [img[i, j][0], img[i, j][1], img[i, j][2], [i, j]]
+            if __is_new_img_point(lst_point, current_point) is True:
+                if __is_point_in_exist_rect__(current_point, rects) is False:
+                    rects.append(__find_rect_by_point__(current_point,img))
             lst_point = current_point
 
 
@@ -31,10 +31,18 @@ if __name__ == "__main__":
 
 def __is_point_in_exist_rect__(point, rects):
     # 判断该点是否是在一个已知的矩形list里 矩形为一个turple,前两个为坐标点，后两个为width height
-    pass
+    for rect in rects:
+        x1 = rect[0]
+        x2 = x1 + rect[2]
+        y1 = rect[1]
+        y2 = y1 - rect[3]
+        if x1<=point[3][0]<=x2 and y1<=point[3][1]<=y2:
+            return True
+        else:
+            return False
 
 
-def __find_rect_by_point__(i, j):
+def __find_rect_by_point__(i, j, imgArray):
     # 当确定了i,j是左上角点后，求出该矩形的长宽各占多少像素点
     pass
 
