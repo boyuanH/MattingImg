@@ -36,15 +36,32 @@ def __is_point_in_exist_rect__(point, rects):
         x2 = x1 + rect[2]
         y1 = rect[1]
         y2 = y1 - rect[3]
-        if x1<=point[3][0]<=x2 and y1<=point[3][1]<=y2:
+        if x1 <= point[3][0] <= x2 and y1 <= point[3][1] <= y2:
             return True
         else:
             return False
 
 
-def __find_rect_by_point__(i, j, imgArray):
+def __find_rect_by_point__(i, j, img_array):
     # 当确定了i,j是左上角点后，求出该矩形的长宽各占多少像素点
-    pass
+    rect_width = 1
+    rect_height = 1
+    rows, cols, div = img_array.shape
+    last_point = [img_array[i, j][0], img_array[i, j][1], img_array[i, j][2]]
+    for row in range(i+1, rows):
+        current_point = [img_array[row, j]]
+        if __is_green_point__(last_point) is False and __is_green_point__(current_point) is True:
+            break
+        else:
+            rect_width = rect_width + 1
+    last_point = [img_array[i, j][0], img_array[i, j][1], img_array[i, j][2]]
+    for col in range(j+1, cols):
+        current_point = [img_array[i, col]]
+        if __is_green_point__(last_point) is False and __is_green_point__(current_point) is True:
+            break
+        else:
+            rect_height = rect_height + 1
+    return rect(i, j, rect_width, rect_height)
 
 
 def __is_new_img_point(last_point,next_point):
