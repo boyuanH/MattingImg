@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 def __is_point_in_exist_rect__(point, rects):
     # 判断该点是否是在一个已知的矩形list里 矩形为一个turple,前两个为坐标点，后两个为width height
     for rect in rects:
-        x1 = rect[0]
-        x2 = x1 + rect[2]
-        y1 = rect[1]
-        y2 = y1 - rect[3]
-        if x1 <= point[3][0] <= x2 and y1 <= point[3][1] <= y2:
+        x1 = rect[1]
+        x2 = x1 + rect[2] - 1
+        y1 = rect[0]
+        y2 = y1 + rect[3] - 1
+        if x1 <= point[3][1] <= x2 and y1 <= point[3][0] <= y2:
             return True
     return False
 
@@ -55,8 +55,8 @@ def __is_green_point__(point):
 
 
 def main():
-    img = np.array(Image.open('D:/Temp/testImg.bmp'))  # 打开图像并转化为数字矩阵
-    rects = [];
+    img = np.array(Image.open('testImg.bmp'))  # 打开图像并转化为数字矩阵
+    rects = []
     rows, cols, div = img.shape
     for i in range(rows):
         lst_point = [0, 255, 0, [i, -1]]
