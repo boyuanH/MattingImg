@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
-
+import os
 
 def __is_point_in_exist_rect__(point, rects):
     # 判断该点是否是在一个已知的矩形list里 矩形为一个turple,前两个为坐标点，后两个为width height
@@ -54,23 +54,42 @@ def __is_green_point__(point):
         return False
 
 
-def main():
-    img = np.array(Image.open('testImg.bmp'))  # 打开图像并转化为数字矩阵
-    rects = []
-    rows, cols, div = img.shape
-    for i in range(rows):
-        lst_point = [0, 255, 0, [i, -1]]
-        for j in range(cols):
-            current_point = [img[i, j][0], img[i, j][1], img[i, j][2], [i, j]]
-            if __is_new_img_point(lst_point, current_point) is True:
-                if __is_point_in_exist_rect__(current_point, rects) is False:
-                    rects.append(__find_rect_by_point__(current_point, img))
-            lst_point = current_point
-    plt.figure("dog")
-    plt.imshow(img)
+def __output_rect__(rect, image_name, img):
+    img_out_array = []
+    for y in range(rect[0], rect[3] + rect[0]):
+        row_array = []
+        for x in range(rect[1], rect[1] + rect[2]):
+            row_array.append(img[y, x])
+        img_out_array.append(row_array)
+    plt.imsave(image_name, img_out_array)
 
-    plt.axis('off')
-    plt.show()
+
+def main():
+    current_file_name = 'testImg.bmp'
+    directory_info = "D:\\Work\\RICOH\\tmpImg\\"
+    target_directory = 'D:\\Work\\RICOH\\imgs\\'
+    files = os.listdir(directory_info)
+    for file_index in range(0, len(files)):
+        current_file_name = os.path.join(directory_info, files[file_index])
+        if os.path.isfile(current_file_name):
+            img = np.array(Image.open(current_file_name))  # 打开图像并转化为数字矩阵
+            rects = []
+            rows, cols, div = img.shape
+            for i in range(rows):
+                lst_point = [0, 255, 0, [i, -1]]
+                for j in range(cols):
+                    current_point = [img[i, j][0], img[i, j][1], img[i, j][2], [i, j]]
+                    if __is_new_img_point(lst_point, current_point) is True:
+                        if __is_point_in_exist_rect__(current_point, rects) is False:
+                            rects.append(__find_rect_by_point__(current_point, img))
+                    lst_point = current_point
+            index = 0
+            (short_name, extension) = os.path.splitext(files[file_index])
+            for rect in rects:
+                img_name = target_directory + short_name + '_' + str(index) + extension
+                __output_rect__(rect, img_name, img)
+                index = index + 1
+                print(short_name + 'Saved')
 
 
 if __name__ == "__main__":
